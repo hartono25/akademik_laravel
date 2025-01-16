@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
@@ -30,10 +31,12 @@ class RegisterController extends Controller
     {
         $validated = $request->validate([
             'name' => 'required',
-            'email' => 'required|unique:users',
+            'email' => 'required|unique:users|email:dns',
             'password' => 'required|min:6',
         ]);
-     
+        
+        $validated['password'] = Hash::make($validated['password']);
+
         User::create($validated);
         return redirect('/login');
     }
